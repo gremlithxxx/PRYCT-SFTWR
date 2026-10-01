@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#0f172a" />
   <title>Mis Finanzas</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0f172a" />
+<meta name="mobile-web-app-capable" content="yes" />
 </head>
 <body>
 
@@ -65,11 +68,17 @@
   </section>
 
   <!-- NAV INFERIOR -->
-  <nav class="bottom-nav">
-    <button class="active">🏠 Inicio</button>
-    <button id="btn-export">📤 Exportar</button>
-  </nav>
-
+ <nav class="bottom-nav">
+  <button class="active" data-tab="home">🏠 Inicio</button>
+  <button id="btn-export">📤 Exportar</button>
+  <button id="btn-import">📥 Importar</button>
+</nav>
+<input type="file" id="file-import" accept=".json" hidden />
   <script src="app.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
 </body>
 </html>

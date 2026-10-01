@@ -121,3 +121,16 @@ body {
   font-size: .85rem; cursor: pointer; padding: 6px 12px;
 }
 .bottom-nav button.active { color: var(--primary); font-weight: 600; }
+
+/* Ajuste para PWA en modo standalone */
+@media (display-mode: standalone) {
+  body { padding-top: 24px; }
+}
+
+/* Evita el zoom al tocar inputs en iOS/Android */
+input, select, button, textarea {
+  font-size: 16px;
+}
+.app-header {
+  padding-top: env(safe-area-inset-top, 0);
+}

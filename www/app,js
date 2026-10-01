@@ -1,5 +1,7 @@
 // ---------- Estado ----------
 let transactions = JSON.parse(localStorage.getItem('txs') || '[]');
+// Detectar si está instalada como PWA
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
 // ---------- Referencias ----------
 const $ = (id) => document.getElementById(id);
@@ -100,5 +102,49 @@ if (localStorage.getItem('theme') === 'light') {
   document.body.classList.add('light');
   $('btn-theme').textContent = '☀️';
 }
+
+// ---------- Exportar JSON ----------
+function exportJSON() {
+  if (!transactions.length) return alert('No hay datos para exportar.');
+  const data = {
+    app: 'Mis Finanzas',
+    version: 1,
+    exported: new Date().toISOString(),
+    transactions
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `finanzas-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---------- Importar JSON ----------
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      const txs = Array.isArray(data) ? data : data.transactions;
+      if (!Array.isArray(txs)) throw new Error('Formato inválido');
+      if (confirm(`¿Importar ${txs.length} transacciones? Se reemplazarán las actuales.`)) {
+        transactions = txs;
+        render();
+      }
+    } catch (err) {
+      alert('Archivo JSON inválido.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ---------- Eventos de exportar/importar ----------
+$('btn-export').addEventListener('click', exportJSON);
+$('btn-import').addEventListener('click', () => $('file-import').click());
+$('file-import').addEventListener('change', (e) => {
+  if (e.target.files[0]) importJSON(e.target.files[0]);
+});
 
 render();
