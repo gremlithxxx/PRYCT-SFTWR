@@ -13,14 +13,13 @@
 
   <header class="app-header">
     <h1>FinanZ</h1>
-    <button id="btn-theme" class="icon-btn">🌙</button>
+    <button id="btn-theme" class="icon-btn">Tema</button>
   </header>
 
-  <!-- ============ MÓDULO 1: ESTUDIO SOCIOECONÓMICO ============ -->
-  <section id="view-perfil" class="view active">
+  <section id="view-perfil" class="view">
     <div class="card">
-      <h3>Estudio socioeconómico</h3>
-      <p class="muted">Registra tu ingreso mensual y tus gastos por categoría.</p>
+      <h3>Estudio socioeconomico</h3>
+      <p class="muted">Registra tu ingreso mensual y tus gastos por categoria.</p>
 
       <form id="form-perfil">
         <label>Ingreso mensual</label>
@@ -31,8 +30,8 @@
           <div><label>Renta</label><input type="number" data-gasto="Renta" min="0" step="0.01" value="0" /></div>
           <div><label>Luz</label><input type="number" data-gasto="Luz" min="0" step="0.01" value="0" /></div>
           <div><label>Agua</label><input type="number" data-gasto="Agua" min="0" step="0.01" value="0" /></div>
-          <div><label>Internet y telefonía</label><input type="number" data-gasto="Internet" min="0" step="0.01" value="0" /></div>
-          <div><label>Alimentación</label><input type="number" data-gasto="Alimentación" min="0" step="0.01" value="0" /></div>
+          <div><label>Internet</label><input type="number" data-gasto="Internet" min="0" step="0.01" value="0" /></div>
+          <div><label>Alimentacion</label><input type="number" data-gasto="Alimentacion" min="0" step="0.01" value="0" /></div>
           <div><label>Transporte</label><input type="number" data-gasto="Transporte" min="0" step="0.01" value="0" /></div>
           <div><label>Entretenimiento</label><input type="number" data-gasto="Entretenimiento" min="0" step="0.01" value="0" /></div>
           <div><label>Deudas</label><input type="number" data-gasto="Deudas" min="0" step="0.01" value="0" /></div>
@@ -43,7 +42,6 @@
     </div>
   </section>
 
-  <!-- ============ MÓDULO 2: DASHBOARD / DISPONIBILIDAD ============ -->
   <section id="view-dashboard" class="view">
     <div class="balance-card">
       <p class="balance-label">Disponibilidad mensual</p>
@@ -67,7 +65,6 @@
     </div>
   </section>
 
-  <!-- ============ MÓDULO 3: METAS FINANCIERAS ============ -->
   <section id="view-metas" class="view">
     <div class="card">
       <h3>Mis metas financieras</h3>
@@ -77,22 +74,21 @@
         <input type="text" id="meta-nombre" placeholder="Ej. Comprar celular" required />
         <input type="number" id="meta-monto" placeholder="Monto de la meta" min="0.01" step="0.01" required />
         <select id="meta-plazo">
-          <option value="corto">Corto plazo (menos de 1 año)</option>
-          <option value="mediano">Mediano plazo (1 a 3 años)</option>
-          <option value="largo">Largo plazo (más de 3 años)</option>
+          <option value="corto">Corto plazo (menos de 1 ano)</option>
+          <option value="mediano">Mediano plazo (1 a 3 anos)</option>
+          <option value="largo">Largo plazo (mas de 3 anos)</option>
         </select>
         <button type="submit" class="primary-btn">Agregar meta</button>
       </form>
 
       <ul id="lista-metas" class="tx-list"></ul>
-      <p id="metas-empty" class="empty-msg">Aún no tienes metas registradas.</p>
+      <p id="metas-empty" class="empty-msg">Aun no tienes metas registradas.</p>
     </div>
   </section>
 
-  <!-- ============ MÓDULO 4: SIMULADOR "QUÉ PASA SI" ============ -->
   <section id="view-simulador" class="view">
     <div class="card">
-      <h3>Simulador "qué pasa si"</h3>
+      <h3>Simulador que pasa si</h3>
       <p class="muted">Ajusta variables y observa el efecto en tus metas.</p>
 
       <label>Cambiar mi ahorro mensual a:</label>
@@ -104,20 +100,17 @@
     </div>
   </section>
 
-  <!-- ============ NAV INFERIOR ============ -->
   <nav class="bottom-nav">
-    <button data-view="perfil">📋 Perfil</button>
-    <button data-view="dashboard" class="active">🏠 Inicio</button>
-    <button data-view="metas">🎯 Metas</button>
-    <button data-view="simulador">🔮 Simular</button>
+    <button data-view="dashboard" class="active">Inicio</button>
+    <button data-view="perfil">Perfil</button>
+    <button data-view="metas">Metas</button>
+    <button data-view="simulador">Simular</button>
   </nav>
-
-  <input type="file" id="file-import" accept=".json" hidden />
 
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.register('sw.js').catch(function(){});
     }
   </script>
 </body>
