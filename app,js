@@ -1,0 +1,269 @@
+const $ = (id) => document.getElementById(id);
+
+const formatearMoneda = (cantidad) =>
+  cantidad.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+
+
+const CalculadoraFinanciera = {
+  /** Disponibilidad = ingresos - gastos (puede ser negativa) */
+  calcularDisponibilidad(ingresoMensual, gastosTotales) {
+    return ingresoMensual - gastosTotales;
+  },
+
+  /** Capacidad de ahorro = max(0, ingreso - gastos) */
+  calcularCapacidadAhorro(ingresoMensual, gastosTotales) {
+    if (ingresoMensual < gastosTotales) return 0;
+    return ingresoMensual - gastosTotales;
+  },
+
+  /** Tiempo en meses para alcanzar una meta (redondeado a 1 decimal) */
+  calcularMesesParaMeta(montoMeta, ahorroMensual) {
+    if (ahorroMensual <= 0) {
+      throw new Error('El ahorro mensual debe ser positivo');
+    }
+    return Math.round((montoMeta / ahorroMensual) * 10) / 10;
+  },
+
+  /** Meses reales (redondeo hacia arriba) para saber cuándo se completa */
+  calcularMesesReales(montoMeta, ahorroMensual) {
+    if (ahorroMensual <= 0) return Infinity;
+    return Math.ceil(montoMeta / ahorroMensual);
+  }
+};
+
+/* =========================================================
+   3. VALIDACIONES (TDD para reglas de entrada)
+   ========================================================= */
+
+const Validador = {
+  esMontoPositivo(valor) {
+    return typeof valor === 'number' && !isNaN(valor) && valor > 0;
+  },
+  esIngresoValido(valor) {
+    return typeof valor === 'number' && !isNaN(valor) && valor >= 0;
+  },
+  esTextoNoVacio(texto) {
+    return typeof texto === 'string' && texto.trim().length > 0;
+  }
+};
+
+/* =========================================================
+   4. REPOSITORIO (Clean Code: persistencia aislada)
+   ========================================================= */
+
+const Repositorio = {
+  CLAVE_PERFIL: 'finanz_perfil',
+  CLAVE_METAS: 'finanz_metas',
+
+  guardarPerfil(perfil) {
+    localStorage.setItem(this.CLAVE_PERFIL, JSON.stringify(perfil));
+  },
+  obtenerPerfil() {
+    return JSON.parse(localStorage.getItem(this.CLAVE_PERFIL) || 'null');
+  },
+  guardarMetas(metas) {
+    localStorage.setItem(this.CLAVE_METAS, JSON.stringify(metas));
+  },
+  obtenerMetas() {
+    return JSON.parse(localStorage.getItem(this.CLAVE_METAS) || '[]');
+  }
+};
+
+/* =========================================================
+   5. ESTADO DE LA APLICACIÓN
+   ========================================================= */
+
+let perfil = Repositorio.obtenerPerfil() || {
+  ingresoMensual: 0,
+  gastos: {}
+};
+
+let metas = Repositorio.obtenerMetas();
+
+/* =========================================================
+   6. RENDERIZADO (Clean Code: presentación separada)
+   ========================================================= */
+
+function renderDashboard() {
+  const totalGastos = Object.values(perfil.gastos)
+    .reduce((acc, v) => acc + (Number(v) || 0), 0);
+
+  const ingreso = Number(perfil.ingresoMensual) || 0;
+  const disponible = CalculadoraFinanciera.calcularDisponibilidad(ingreso, totalGastos);
+  const capacidad = CalculadoraFinanciera.calcularCapacidadAhorro(ingreso, totalGastos);
+
+  $('total-ingresos').textContent = formatearMoneda(ingreso);
+  $('total-gastos').textContent = formatearMoneda(totalGastos);
+  $('disponible').textContent = formatearMoneda(disponible);
+  $('capacidad-ahorro').textContent = formatearMoneda(capacidad);
+
+  const mensaje = $('mensaje-ahorro');
+  if (capacidad === 0 && ingreso > 0) {
+    mensaje.textContent = 'Tus gastos igualan o superan tus ingresos. No hay capacidad de ahorro.';
+    mensaje.style.color = 'var(--expense)';
+  } else if (capacidad === 0) {
+    mensaje.textContent = 'Registra tu estudio socioeconómico para ver tu capacidad.';
+    mensaje.style.color = 'var(--muted)';
+  } else {
+    mensaje.textContent = `Puedes destinar hasta ${formatearMoneda(capacidad)} al ahorro cada mes.`;
+    mensaje.style.color = 'var(--income)';
+  }
+}
+
+function renderMetas() {
+  const lista = $('lista-metas');
+  lista.innerHTML = '';
+
+  const capacidad = CalculadoraFinanciera.calcularCapacidadAhorro(
+    Number(perfil.ingresoMensual) || 0,
+    Object.values(perfil.gastos).reduce((a, b) => a + (Number(b) || 0), 0)
+  );
+
+  metas.forEach((meta, i) => {
+    let tiempoTexto = '—';
+    try {
+      const meses = CalculadoraFinanciera.calcularMesesParaMeta(meta.monto, capacidad);
+      tiempoTexto = `${meses} meses (aprox.)`;
+    } catch {
+      tiempoTexto = 'Sin capacidad de ahorro';
+    }
+
+    const li = document.createElement('li');
+    li.className = 'tx-item';
+    li.innerHTML = `
+      <div class="tx-info">
+        <span class="tx-desc">${meta.nombre}</span>
+        <span class="tx-cat">${meta.plazo} · ${formatearMoneda(meta.monto)}</span>
+        <span class="tx-cat">Tiempo estimado: ${tiempoTexto}</span>
+      </div>
+      <span class="tx-amount expense" data-eliminar="${i}" style="cursor:pointer">✕</span>
+    `;
+    lista.appendChild(li);
+  });
+
+  $('metas-empty').style.display = metas.length ? 'none' : 'block';
+}
+
+function renderPerfil() {
+  if (perfil.ingresoMensual) {
+    $('ingreso').value = perfil.ingresoMensual;
+  }
+  document.querySelectorAll('[data-gasto]').forEach((input) => {
+    const cat = input.dataset.gasto;
+    if (perfil.gastos[cat] !== undefined) {
+      input.value = perfil.gastos[cat];
+    }
+  });
+}
+
+function renderTodo() {
+  renderDashboard();
+  renderMetas();
+  renderPerfil();
+}
+
+/* =========================================================
+   7. EVENTOS (Clean Code: un listener por responsabilidad)
+   ========================================================= */
+
+// --- Formulario de perfil / estudio socioeconómico (BDD) ---
+$('form-perfil').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const ingreso = parseFloat($('ingreso').value) || 0;
+
+  if (!Validador.esIngresoValido(ingreso)) {
+    alert('El ingreso debe ser un número mayor o igual a cero.');
+    return;
+  }
+
+  const gastos = {};
+  document.querySelectorAll('[data-gasto]').forEach((input) => {
+    gastos[input.dataset.gasto] = parseFloat(input.value) || 0;
+  });
+
+  perfil = { ingresoMensual: ingreso, gastos };
+  Repositorio.guardarPerfil(perfil);
+  renderTodo();
+  alert('Estudio socioeconómico guardado.');
+});
+
+// --- Formulario de metas ---
+$('form-meta').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = $('meta-nombre').value.trim();
+  const monto = parseFloat($('meta-monto').value);
+  const plazo = $('meta-plazo').value;
+
+  if (!Validador.esTextoNoVacio(nombre)) return alert('Escribe un nombre para la meta.');
+  if (!Validador.esMontoPositivo(monto)) return alert('El monto debe ser mayor a cero.');
+
+  metas.push({ nombre, monto, plazo, fecha: new Date().toISOString() });
+  Repositorio.guardarMetas(metas);
+  e.target.reset();
+  renderMetas();
+});
+
+// --- Eliminar meta (delegación de eventos) ---
+$('lista-metas').addEventListener('click', (e) => {
+  const idx = e.target.dataset.eliminar;
+  if (idx !== undefined) {
+    if (confirm('¿Eliminar esta meta?')) {
+      metas.splice(Number(idx), 1);
+      Repositorio.guardarMetas(metas);
+      renderMetas();
+    }
+  }
+});
+
+// --- Simulador "qué pasa si" (BDD) ---
+$('btn-simular').addEventListener('click', () => {
+  const nuevoAhorro = parseFloat($('sim-ahorro').value) || 0;
+  const resultado = $('resultado-sim');
+
+  if (nuevoAhorro <= 0) {
+    resultado.innerHTML = '<span class="warn">Ingresa un ahorro mensual mayor a cero.</span>';
+    return;
+  }
+  if (metas.length === 0) {
+    resultado.innerHTML = '<span class="warn">Primero registra al menos una meta.</span>';
+    return;
+  }
+
+  let html = `<p>Con un ahorro de <strong>${formatearMoneda(nuevoAhorro)}</strong> al mes:</p><ul>`;
+  metas.forEach((meta) => {
+    const meses = CalculadoraFinanciera.calcularMesesReales(meta.monto, nuevoAhorro);
+    html += `<li>${meta.nombre}: <span class="ok">${meses} meses</span></li>`;
+  });
+  html += '</ul>';
+  resultado.innerHTML = html;
+});
+
+// --- Navegación entre vistas ---
+document.querySelectorAll('.bottom-nav button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.bottom-nav button').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.view').forEach((v) => v.classList.remove('active'));
+    $('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+
+// --- Tema claro / oscuro ---
+$('btn-theme').addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  $('btn-theme').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
+
+if (localStorage.getItem('theme') === 'light') {
+  document.body.classList.add('light');
+  $('btn-theme').textContent = '☀️';
+}
+
+/* =========================================================
+   8. INICIALIZACIÓN
+   ========================================================= */
+
+renderTodo();

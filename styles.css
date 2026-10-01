@@ -134,3 +134,82 @@ input, select, button, textarea {
 .app-header {
   padding-top: env(safe-area-inset-top, 0);
 }
+
+.view { display: none; }
+.view.active { display: block; }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card h3 { margin-bottom: 6px; font-size: 1rem; }
+.card h4 { margin: 14px 0 6px; font-size: .9rem; color: var(--muted); }
+
+.muted { color: var(--muted); font-size: .85rem; margin-bottom: 12px; }
+
+.big-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--income);
+  margin: 8px 0;
+}
+
+.grid-gastos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.grid-gastos label {
+  font-size: .75rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.grid-gastos input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid rgba(148,163,184,.2);
+  color: var(--text);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+#form-perfil label,
+#form-perfil > input {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+#form-perfil > input,
+#form-meta input,
+#form-meta select,
+#view-simulador input {
+  background: var(--bg);
+  border: 1px solid rgba(148,163,184,.2);
+  color: var(--text);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 8px;
+}
+
+#form-meta input,
+#form-meta select { width: 100%; }
+
+.sim-result {
+  margin-top: 12px;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.sim-result .ok { color: var(--income); }
+.sim-result .warn { color: var(--expense); }
