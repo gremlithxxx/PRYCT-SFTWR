@@ -1,0 +1,104 @@
+// ---------- Estado ----------
+let transactions = JSON.parse(localStorage.getItem('txs') || '[]');
+
+// ---------- Referencias ----------
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+
+// ---------- Render ----------
+function render() {
+  const list = $('tx-list');
+  list.innerHTML = '';
+
+  let income = 0, expense = 0;
+
+  transactions.forEach((tx, i) => {
+    if (tx.type === 'income') income += tx.amount;
+    else expense += tx.amount;
+
+    const li = document.createElement('li');
+    li.className = 'tx-item';
+    li.innerHTML = `
+      <div class="tx-info">
+        <span class="tx-desc">${tx.desc}</span>
+        <span class="tx-cat">${tx.category}</span>
+      </div>
+      <span class="tx-amount ${tx.type}">
+        ${tx.type === 'income' ? '+' : '-'} ${fmt(tx.amount)}
+      </span>
+    `;
+    li.addEventListener('dblclick', () => removeTx(i));
+    list.appendChild(li);
+  });
+
+  $('balance').textContent = fmt(income - expense);
+  $('total-income').textContent = fmt(income);
+  $('total-expense').textContent = fmt(expense);
+  $('empty-msg').style.display = transactions.length ? 'none' : 'block';
+
+  localStorage.setItem('txs', JSON.stringify(transactions));
+}
+
+// ---------- Acciones ----------
+function addTx(e) {
+  e.preventDefault();
+  const tx = {
+    desc: $('desc').value.trim(),
+    amount: parseFloat($('amount').value),
+    type: $('type').value,
+    category: $('category').value,
+    date: new Date().toISOString()
+  };
+  if (!tx.desc || isNaN(tx.amount) || tx.amount <= 0) return;
+  transactions.unshift(tx);
+  e.target.reset();
+  render();
+}
+
+function removeTx(index) {
+  if (confirm('¿Eliminar esta transacción?')) {
+    transactions.splice(index, 1);
+    render();
+  }
+}
+
+function clearAll() {
+  if (confirm('¿Borrar TODAS las transacciones?')) {
+    transactions = [];
+    render();
+  }
+}
+
+function exportCSV() {
+  if (!transactions.length) return alert('No hay datos para exportar.');
+  const rows = [['Fecha','Descripción','Categoría','Tipo','Monto']];
+  transactions.forEach(t => rows.push([t.date, t.desc, t.category, t.type, t.amount]));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'finanzas.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---------- Tema ----------
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  $('btn-theme').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}
+
+// ---------- Eventos ----------
+$('tx-form').addEventListener('submit', addTx);
+$('btn-clear').addEventListener('click', clearAll);
+$('btn-export').addEventListener('click', exportCSV);
+$('btn-theme').addEventListener('click', toggleTheme);
+
+// Tema guardado
+if (localStorage.getItem('theme') === 'light') {
+  document.body.classList.add('light');
+  $('btn-theme').textContent = '☀️';
+}
+
+render();

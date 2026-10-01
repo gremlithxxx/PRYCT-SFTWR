@@ -1,0 +1,17 @@
+# 1. Crear proyecto Node
+npm init -y
+
+# 2. Instalar Capacitor
+npm install @capacitor/core @capacitor/cli @capacitor/android
+
+# 3. Inicializar (webDir = carpeta www)
+npx cap init "Mis Finanzas" com.tuapp.finanzas --web-dir=www
+
+# 4. Añadir Android
+npx cap add android
+
+# 5. Copiar archivos web
+npx cap sync
+
+# 6. Abrir en Android Studio
+npx cap open android
