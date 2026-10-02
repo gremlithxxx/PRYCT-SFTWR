@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <title>{% block titulo %}FinanZ{% endblock %}</title>
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>{% block encabezado %}FinanZ{% endblock %}</h1>
+    <button id="btn-theme" class="icon-btn">Tema</button>
+  </header>
+
+  <main>
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="{{ url_for('dashboard') }}" class="{% if vista_activa == 'dashboard' %}active{% endif %}">Inicio</a>
+    <a href="{{ url_for('perfil') }}" class="{% if vista_activa == 'perfil' %}active{% endif %}">Perfil</a>
+    <a href="{{ url_for('metas') }}" class="{% if vista_activa == 'metas' %}active{% endif %}">Metas</a>
+    <a href="{{ url_for('simulador') }}" class="{% if vista_activa == 'simulador' %}active{% endif %}">Simular</a>
+  </nav>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(){});
+    }
+  </script>
+</body>
+</html>

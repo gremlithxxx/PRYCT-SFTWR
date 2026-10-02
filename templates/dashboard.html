@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block titulo %}Inicio - FinanZ{% endblock %}
+{% block encabezado %}FinanZ{% endblock %}
+
+{% block contenido %}
+<section class="view active">
+  <div class="balance-card">
+    <p class="balance-label">Disponibilidad mensual</p>
+    <h2 id="disponible" class="balance-amount">$0.00</h2>
+    <div class="balance-summary">
+      <div>
+        <span class="tag income">Ingresos</span>
+        <p id="total-ingresos">$0.00</p>
+      </div>
+      <div>
+        <span class="tag expense">Gastos</span>
+        <p id="total-gastos">$0.00</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Capacidad de ahorro</h3>
+    <p id="capacidad-ahorro" class="big-number">$0.00</p>
+    <p class="muted" id="mensaje-ahorro"></p>
+  </div>
+</section>
+{% endblock %}
