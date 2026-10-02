@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block titulo %}Metas - FinanZ{% endblock %}
+{% block encabezado %}Mis metas financieras{% endblock %}
+
+{% block contenido %}
+<section class="view active">
+  <div class="card">
+    <h3>Nueva meta</h3>
+    <p class="muted">Corto, mediano y largo plazo.</p>
+
+    <form id="form-meta">
+      <input type="text" id="meta-nombre" placeholder="Ej. Comprar celular" required />
+      <input type="number" id="meta-monto" placeholder="Monto de la meta" min="0.01" step="0.01" required />
+      <select id="meta-plazo">
+        <option value="corto">Corto plazo (menos de 1 ano)</option>
+        <option value="mediano">Mediano plazo (1 a 3 anos)</option>
+        <option value="largo">Largo plazo (mas de 3 anos)</option>
+      </select>
+      <button type="submit" class="primary-btn">Agregar meta</button>
+    </form>
+
+    <ul id="lista-metas" class="tx-list"></ul>
+    <p id="metas-empty" class="empty-msg">Aun no tienes metas registradas.</p>
+  </div>
+</section>
+{% endblock %}

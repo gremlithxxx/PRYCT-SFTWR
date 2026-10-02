@@ -16,6 +16,29 @@
     <button id="btn-theme" class="icon-btn">Tema</button>
   </header>
 
+  <section id="view-dashboard" class="view active">
+    <div class="balance-card">
+      <p class="balance-label">Disponibilidad mensual</p>
+      <h2 id="disponible" class="balance-amount">$0.00</h2>
+      <div class="balance-summary">
+        <div>
+          <span class="tag income">Ingresos</span>
+          <p id="total-ingresos">$0.00</p>
+        </div>
+        <div>
+          <span class="tag expense">Gastos</span>
+          <p id="total-gastos">$0.00</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Capacidad de ahorro</h3>
+      <p id="capacidad-ahorro" class="big-number">$0.00</p>
+      <p class="muted" id="mensaje-ahorro"></p>
+    </div>
+  </section>
+
   <section id="view-perfil" class="view">
     <div class="card">
       <h3>Estudio socioeconomico</h3>
@@ -39,29 +62,6 @@
 
         <button type="submit" class="primary-btn">Guardar estudio</button>
       </form>
-    </div>
-  </section>
-
-  <section id="view-dashboard" class="view">
-    <div class="balance-card">
-      <p class="balance-label">Disponibilidad mensual</p>
-      <h2 id="disponible" class="balance-amount">$0.00</h2>
-      <div class="balance-summary">
-        <div>
-          <span class="tag income">Ingresos</span>
-          <p id="total-ingresos">$0.00</p>
-        </div>
-        <div>
-          <span class="tag expense">Gastos</span>
-          <p id="total-gastos">$0.00</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Capacidad de ahorro</h3>
-      <p id="capacidad-ahorro" class="big-number">$0.00</p>
-      <p class="muted" id="mensaje-ahorro"></p>
     </div>
   </section>
 
@@ -108,10 +108,5 @@
   </nav>
 
   <script src="finanz.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(function(){});
-    }
-  </script>
 </body>
 </html>

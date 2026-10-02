@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block titulo %}Perfil - FinanZ{% endblock %}
+{% block encabezado %}Estudio socioeconomico{% endblock %}
+
+{% block contenido %}
+<section class="view active">
+  <div class="card">
+    <h3>Datos economicos</h3>
+    <p class="muted">Registra tu ingreso mensual y tus gastos por categoria.</p>
+
+    <form id="form-perfil">
+      <label>Ingreso mensual</label>
+      <input type="number" id="ingreso" placeholder="25000" min="0" step="0.01" required />
+
+      <h4>Gastos mensuales</h4>
+      <div class="grid-gastos">
+        <div><label>Renta</label><input type="number" data-gasto="Renta" min="0" step="0.01" value="0" /></div>
+        <div><label>Luz</label><input type="number" data-gasto="Luz" min="0" step="0.01" value="0" /></div>
+        <div><label>Agua</label><input type="number" data-gasto="Agua" min="0" step="0.01" value="0" /></div>
+        <div><label>Internet</label><input type="number" data-gasto="Internet" min="0" step="0.01" value="0" /></div>
+        <div><label>Alimentacion</label><input type="number" data-gasto="Alimentacion" min="0" step="0.01" value="0" /></div>
+        <div><label>Transporte</label><input type="number" data-gasto="Transporte" min="0" step="0.01" value="0" /></div>
+        <div><label>Entretenimiento</label><input type="number" data-gasto="Entretenimiento" min="0" step="0.01" value="0" /></div>
+        <div><label>Deudas</label><input type="number" data-gasto="Deudas" min="0" step="0.01" value="0" /></div>
+      </div>
+
+      <button type="submit" class="primary-btn">Guardar estudio</button>
+    </form>
+  </div>
+</section>
+{% endblock %} 
