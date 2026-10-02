@@ -1,0 +1,208 @@
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --primary: #3b82f6;
+  --income: #22c55e;
+  --expense: #ef4444;
+  --radius: 14px;
+}
+
+body.light {
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 16px 16px 100px;
+  transition: background .3s, color .3s;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.app-header h1 { font-size: 1.4rem; }
+
+.icon-btn {
+  background: var(--card);
+  border: none;
+  color: var(--text);
+  font-size: .85rem;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.balance-card {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: var(--radius);
+  padding: 20px;
+  color: #fff;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 20px rgba(59,130,246,.3);
+}
+
+.balance-label { font-size: .85rem; opacity: .9; }
+.balance-amount { font-size: 2.2rem; margin: 6px 0 14px; }
+.balance-summary { display: flex; justify-content: space-between; }
+.tag { font-size: .75rem; padding: 2px 8px; border-radius: 6px; }
+.tag.income { background: rgba(34,197,94,.25); }
+.tag.expense { background: rgba(239,68,68,.25); }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card h3 { margin-bottom: 6px; font-size: 1rem; }
+.card h4 { margin: 14px 0 6px; font-size: .9rem; color: var(--muted); }
+
+.muted { color: var(--muted); font-size: .85rem; margin-bottom: 12px; }
+
+.big-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--income);
+  margin: 8px 0;
+}
+
+.grid-gastos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.grid-gastos label {
+  font-size: .75rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.grid-gastos input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid rgba(148,163,184,.2);
+  color: var(--text);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+#form-perfil label,
+#form-perfil > input {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+#form-perfil > input,
+#form-meta input,
+#form-meta select,
+section input {
+  background: var(--bg);
+  border: 1px solid rgba(148,163,184,.2);
+  color: var(--text);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+#form-perfil > input:focus,
+#form-meta input:focus,
+#form-meta select:focus,
+section input:focus { border-color: var(--primary); }
+
+.primary-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.primary-btn:active { transform: scale(.97); }
+
+.tx-list { list-style: none; }
+
+.tx-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(148,163,184,.15);
+}
+
+.tx-item:last-child { border-bottom: none; }
+.tx-info { display: flex; flex-direction: column; gap: 2px; }
+.tx-desc { font-weight: 500; }
+.tx-cat { font-size: .75rem; color: var(--muted); }
+.tx-amount { font-weight: 700; }
+.tx-amount.income { color: var(--income); }
+.tx-amount.expense { color: var(--expense); }
+.empty-msg { text-align: center; color: var(--muted); padding: 20px; font-size: .9rem; }
+
+.view { display: none; }
+.view.active { display: block; }
+
+.sim-result {
+  margin-top: 12px;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.sim-result ul { margin-left: 18px; margin-top: 6px; }
+.sim-result .ok { color: var(--income); font-weight: 600; }
+.sim-result .warn { color: var(--expense); }
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0));
+  border-top: 1px solid rgba(148,163,184,.15);
+  z-index: 10;
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: .8rem;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: color .2s;
+}
+
+.bottom-nav button.active { color: var(--primary); font-weight: 600; }
+
+input, select, button, textarea { font-size: 16px; }

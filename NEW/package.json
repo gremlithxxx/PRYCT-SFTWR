@@ -1,0 +1,8 @@
+{
+  "name": "finanz",
+  "version": "1.0.0",
+  "description": "App de finanzas personales FinanZ",
+  "scripts": {
+    "build": "nitron build"
+  }
+}
